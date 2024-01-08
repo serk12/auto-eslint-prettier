@@ -1,10 +1,14 @@
 {
   "name": "auto-prettier-eslint",
   "main": "./lib/auto-prettier-eslint",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "description": "Runs eslint --fix or prettier on the current file.",
-  "keywords": ["prettier", "eslint", "format"],
-  "repository": "https://github.com/serk12/auto-prettier-eslint",
+  "keywords": [
+    "prettier",
+    "eslint",
+    "format"
+  ],
+  "repository": "",
   "license": "MIT",
   "engines": {
     "atom": ">=1.0.0 <2.0.0"
