@@ -3,24 +3,24 @@
     'atom-text-editor': [
         {
             'label': 'Run eslint --fix'
-            'command': 'atom-eslint-fix:run'
+            'command': 'auto-prettier-eslint:run'
         }
     ]
     '.tree-view .file': [
         {
             'label': 'Run eslint --fix'
-            'command': 'atom-eslint-fix:run-tree-view'
+            'command': 'auto-prettier-eslint:run-tree-view'
         }
     ]
 'menu': [
     {
         'label': 'Packages'
         'submenu': [
-            'label': 'atom-eslint-fix'
+            'label': 'auto-prettier-eslint'
             'submenu': [
                 {
                     'label': 'Run eslint --fix'
-                    'command': 'atom-eslint-fix:run'
+                    'command': 'auto-prettier-eslint:run'
                 }
             ]
         ]
