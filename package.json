@@ -13,5 +13,23 @@
   "engines": {
     "atom": ">=1.0.0 <2.0.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "atom-package-deps": "5.1.0",
+    "atom-linter": "10.0.0"
+  },
+  "apmInstallSource": {
+    "type": "git",
+    "source": "https://gitlab.com/serk12/eslint-fixer-pulsar",
+    "sha": "e43a94a9807fe0fd349934df8d73ad5a06368a7e"
+  },
+  "package-deps": [
+    "linter:2.0.0"
+  ],
+  "providedServices": {
+    "linter": {
+      "versions": {
+        "2.0.0": "provideLinter"
+      }
+    }
+  }
 }
