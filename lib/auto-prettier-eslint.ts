@@ -30,14 +30,12 @@ async function waitToReady() {
     }
   }
 
-  logNotification("OWOWOWOW wait");
   await checkReady();
-  logNotification("OWOWOWOW done");
   return [];
 }
 
+let current_errors = "";
 let current_results: Promise<LintResult[]> = new Promise(() => {
-  logNotification("OWOWOWOW linaaaaaat");
   waitToReady();
   return [];
 });
@@ -188,8 +186,8 @@ export function cliExec(cwd, runner, arg, callback) {
       logNotification("", runner + " compleated");
     }
     if (runner.includes("eslint")) {
+      current_errors = out;
       current_results.then((results) => {
-        logNotification("OWOWOWOW");
         let parsing = out;
         const messages: LintMessage[] = [];
         let file_path = "";
@@ -245,40 +243,68 @@ export function provideLinter() {
     grammarScopes: ["source.ts"],
     scope: "file",
     lintsOnChange: false,
-    lint: async (editor) => {
-      logNotification("OWOWOWOW async");
-      next_ready = false;
-      start_time = Date.now();
-      current_results.then(async (result) => {
-        logNotification("OWOWOWOW lint");
-        await waitToReady();
-        return result;
-      });
-      return await current_results
-        .then((results) => {
-          logNotification("OWOWOWOW then");
-          const promises = [];
-          for (let i = 0; i < results.length; ++i) {
-            for (let j = 0; j < results[i].messages.length; ++j) {
-              promises.push({
-                severity: "error", // results[i].messages[j].severity,
-                excerpt: results[i].messages[j].message,
-                location: {
-                  file: results[i].filePath,
-                  position: generateRange(editor, results[i].messages[j].line, results[i].messages[j].column),
-                },
-              });
-            }
-          }
-          current_results = new Promise(() => {
-            logNotification("OWOWOWOW qqqqqq");
-            return [];
-          });
-          return promises;
-        })
-        .catch((error: Error) => {
-          logNotification("", "ERROR: " + error.message);
+    lint: (editor) => {
+      let promises = [];
+      let parsing = current_errors;
+      while (parsing.length > 0 && parsing.indexOf("\n") !== 0) {
+        const fileAndWhere = parsing.substring(0, parsing.indexOf(" "));
+        parsing = parsing.substring(parsing.indexOf(" "));
+
+        const message = parsing.substring(0, parsing.indexOf("\n"));
+        parsing = parsing.substring(parsing.indexOf("\n"));
+
+        const [path, line, column, dummy] = fileAndWhere.split(":");
+
+        promises.push({
+          severity: "error",
+          excerpt: message,
+          location: {
+            file: path,
+            position: generateRange(editor, Number(line) - 1, Number(column) - 1),
+          },
         });
+      }
+      return Promise.resolve(promises);
     },
   };
 }
+
+// export function provideLinter() {
+//   return {
+//     name: "Eslint",
+//     grammarScopes: ["source.ts"],
+//     scope: "file",
+//     lintsOnChange: false,
+//     lint: async (editor) => {
+//       next_ready = false;
+//       start_time = Date.now();
+//       current_results.then(async (result) => {
+//         await waitToReady();
+//         return result;
+//       });
+//       return await current_results
+//         .then((results) => {
+//           const promises = [];
+//           for (let i = 0; i < results.length; ++i) {
+//             for (let j = 0; j < results[i].messages.length; ++j) {
+//               promises.push({
+//                 severity: "error", // results[i].messages[j].severity,
+//                 excerpt: results[i].messages[j].message,
+//                 location: {
+//                   file: results[i].filePath,
+//                   position: generateRange(editor, results[i].messages[j].line, results[i].messages[j].column),
+//                 },
+//               });
+//             }
+//           }
+//           current_results = new Promise(() => {
+//             return [];
+//           });
+//           return promises;
+//         })
+//         .catch((error: Error) => {
+//           logNotification("", "ERROR: " + error.message);
+//         });
+//     },
+//   };
+// }
