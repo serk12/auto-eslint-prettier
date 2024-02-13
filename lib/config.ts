@@ -4,21 +4,8 @@ var prefix = "auto-prettier-eslint.";
 function getValue(key) {
   return atom.config.get(prefix + key);
 }
-module.exports = {
-  // save: {
-  //     title: 'Fix on save',
-  //     description: 'If checked, will run eslint --fix after saving files.',
-  //     type: 'boolean',
-  //     default: false,
-  //     get: getValue.bind(null, 'save')
-  // },
-  // open: {
-  //     title: 'Fix on open',
-  //     description: 'If checked, will run eslint --fix after saving files.',
-  //     type: 'boolean',
-  //     default: false,
-  //     get: getValue.bind(null, 'open')
-  // },
+
+const Config = {
   prettierPath: {
     title: "Prettier Path",
     description:
@@ -101,3 +88,5 @@ module.exports = {
     },
   },
 };
+
+export default Config;
