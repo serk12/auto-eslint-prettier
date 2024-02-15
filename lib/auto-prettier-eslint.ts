@@ -20,25 +20,77 @@ function bytes2String(bytes) {
 
 export const config = Config;
 let next_ready = false;
+let editor = null;
 let start_time = Date.now();
 
-async function waitToReady() {
-  async function checkReady() {
-    if (!(next_ready || Date.now() > start_time + 300000)) {
-      await window.setTimeout(checkReady, 1000);
-    } else {
+function parseErrorsAsync() {
+  const results = [];
+  let parsing = current_errors;
+  const messages: LintMessage[] = [];
+  let file_path = "";
+  parsing = parsing.substring(0, parsing.lastIndexOf(" problems") + 1);
+  let qtty = parseInt(parsing.substring(parsing.lastIndexOf("\n"), parsing.length - 1));
+  let aqtty = parsing.substring(parsing.lastIndexOf("\n"), parsing.length - 1);
+  while (parsing.length > 0 && qtty > 0) {
+    --qtty;
+    const fileAndWhere = parsing.substring(0, parsing.indexOf(" "));
+    parsing = parsing.substring(parsing.indexOf(" "));
+
+    const message = parsing.substring(0, parsing.indexOf("\n"));
+    parsing = parsing.substring(parsing.indexOf("\n") + 1);
+
+    const [fp, line, column, _] = fileAndWhere.split(":");
+    file_path = fp;
+    messages.push({
+      message: message,
+      line: Number(line) - 1,
+      column: Number(column) - 1,
+      ruleId: null,
+    } as LintMessage);
+  }
+  results.push({
+    filePath: file_path,
+    messages: messages,
+    errorCount: messages.length,
+    fatalErrorCount: 0,
+    warningCount: 0,
+    fixableErrorCount: 0,
+    fixableWarningCount: 0,
+  } as LintResult);
+
+  return fromLintToLinter(results);
+}
+
+function fromLintToLinter(results: LintResult[]): Promise<any[]> {
+  const promises = [];
+  for (let i = 0; i < results.length; ++i) {
+    for (let j = 0; j < results[i].messages.length; ++j) {
+      promises.push({
+        severity: "error", // results[i].messages[j].severity,
+        excerpt: results[i].messages[j].message,
+        location: {
+          file: results[i].filePath,
+          position: generateRange(editor, results[i].messages[j].line, results[i].messages[j].column),
+        },
+      });
     }
   }
+  return Promise.resolve(promises);
+}
 
-  await checkReady();
-  return [];
+function waitToReady(): Promise<any[]> {
+  return new Promise((resolve, reject) => {
+    const id = setInterval(() => {
+      if (next_ready || Date.now() > start_time + 30000) {
+        clearInterval(id);
+        resolve(parseErrorsAsync());
+      }
+    });
+  });
 }
 
 let current_errors = "";
-let current_results: Promise<LintResult[]> = new Promise(() => {
-  waitToReady();
-  return [];
-});
+let current_results: Promise<any[]> | null = null;
 const current_config = config;
 let running = false;
 let child = null;
@@ -165,16 +217,15 @@ export function execEslint(filepath) {
 
 export function cliExec(cwd, runner, arg, callback) {
   if (runner.includes("eslint")) {
-    const file = arg[arg.length - 1];
-    // current_results
-    //   .then(async (result) => {
-    //     const result2 = await cliEngine.lintFiles(file);
+    // const file = arg[arg.length - 1];
+    // const parseErrorsAsync = (result: any[]) => {
+    //     const result2 = cliEngine.lintFiles(file) as any as LintResult[];
     //     return result.concat(result2);
-    //   })
-    //   .catch((error) => {
-    //     logNotification("", "Error: " + String(error));
-    //     return [];
-    //   });
+    //   };
+    //
+    // if (current_results != null) {
+    //   current_results.then(parseErrorsAsync);
+    // }
   }
 
   child = execFile(runner, arg, { cwd, shell: false }, (error, stdout, stderr) => {
@@ -187,37 +238,9 @@ export function cliExec(cwd, runner, arg, callback) {
     }
     if (runner.includes("eslint")) {
       current_errors = out;
-      current_results.then((results) => {
-        let parsing = out;
-        const messages: LintMessage[] = [];
-        let file_path = "";
-        while (parsing.length > 0 && parsing.indexOf("\n") !== 0) {
-          const fileAndWhere = parsing.substring(0, parsing.indexOf(" "));
-          parsing = parsing.substring(parsing.indexOf(" "));
-
-          const message = parsing.substring(0, parsing.indexOf("\n"));
-          parsing = parsing.substring(parsing.indexOf("\n"));
-
-          const [fp, line, column, _] = fileAndWhere.split(":");
-          file_path = fp;
-          messages.push({
-            message: message,
-            line: Number(column) - 1,
-            column: Number(line) - 1,
-            ruleId: null,
-          } as LintMessage);
-        }
-        results.push({
-          filePath: file_path,
-          messages: messages,
-          errorCount: messages.length,
-          fatalErrorCount: 0,
-          warningCount: 0,
-          fixableErrorCount: 0,
-          fixableWarningCount: 0,
-        } as LintResult);
-        return results;
-      });
+      if (current_results != null) {
+        current_results.then(parseErrorsAsync);
+      }
       next_ready = true;
     }
     running = false;
@@ -236,6 +259,38 @@ export function cliExec(cwd, runner, arg, callback) {
     }
   });
 }
+//
+// export function provideLinter() {
+//   return {
+//     name: "Eslint",
+//     grammarScopes: ["source.ts"],
+//     scope: "file",
+//     lintsOnChange: false,
+//     lint: (editor) => {
+//       let promises = [];
+//       let parsing = current_errors;
+//       while (parsing.length > 0 && parsing.indexOf("\n") !== 0) {
+//         const fileAndWhere = parsing.substring(0, parsing.indexOf(" "));
+//         parsing = parsing.substring(parsing.indexOf(" "));
+//
+//         const message = parsing.substring(0, parsing.indexOf("\n"));
+//         parsing = parsing.substring(parsing.indexOf("\n"));
+//
+//         const [path, line, column, dummy] = fileAndWhere.split(":");
+//
+//         promises.push({
+//           severity: "error",
+//           excerpt: message,
+//           location: {
+//             file: path,
+//             position: generateRange(editor, Number(line) - 1, Number(column) - 1),
+//           },
+//         });
+//       }
+//       return Promise.resolve(promises);
+//     },
+//   };
+// }
 
 export function provideLinter() {
   return {
@@ -243,68 +298,12 @@ export function provideLinter() {
     grammarScopes: ["source.ts"],
     scope: "file",
     lintsOnChange: false,
-    lint: (editor) => {
-      let promises = [];
-      let parsing = current_errors;
-      while (parsing.length > 0 && parsing.indexOf("\n") !== 0) {
-        const fileAndWhere = parsing.substring(0, parsing.indexOf(" "));
-        parsing = parsing.substring(parsing.indexOf(" "));
-
-        const message = parsing.substring(0, parsing.indexOf("\n"));
-        parsing = parsing.substring(parsing.indexOf("\n"));
-
-        const [path, line, column, dummy] = fileAndWhere.split(":");
-
-        promises.push({
-          severity: "error",
-          excerpt: message,
-          location: {
-            file: path,
-            position: generateRange(editor, Number(line) - 1, Number(column) - 1),
-          },
-        });
-      }
-      return Promise.resolve(promises);
+    lint: (current_editor): Promise<any[]> => {
+      editor = current_editor;
+      next_ready = false;
+      start_time = Date.now();
+      current_results = waitToReady();
+      return current_results;
     },
   };
 }
-
-// export function provideLinter() {
-//   return {
-//     name: "Eslint",
-//     grammarScopes: ["source.ts"],
-//     scope: "file",
-//     lintsOnChange: false,
-//     lint: async (editor) => {
-//       next_ready = false;
-//       start_time = Date.now();
-//       current_results.then(async (result) => {
-//         await waitToReady();
-//         return result;
-//       });
-//       return await current_results
-//         .then((results) => {
-//           const promises = [];
-//           for (let i = 0; i < results.length; ++i) {
-//             for (let j = 0; j < results[i].messages.length; ++j) {
-//               promises.push({
-//                 severity: "error", // results[i].messages[j].severity,
-//                 excerpt: results[i].messages[j].message,
-//                 location: {
-//                   file: results[i].filePath,
-//                   position: generateRange(editor, results[i].messages[j].line, results[i].messages[j].column),
-//                 },
-//               });
-//             }
-//           }
-//           current_results = new Promise(() => {
-//             return [];
-//           });
-//           return promises;
-//         })
-//         .catch((error: Error) => {
-//           logNotification("", "ERROR: " + error.message);
-//         });
-//     },
-//   };
-// }

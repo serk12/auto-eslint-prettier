@@ -22,7 +22,7 @@
   "apmInstallSource": {
     "type": "git",
     "source": "https://gitlab.com/serk12/eslint-fixer-pulsar",
-    "sha": "a7a77d75bddd23520542c77324fec64610f87169"
+    "sha": "288c905a3ffe3f6299596e263904558624c8d7e6"
   },
   "package-deps": [
     "linter:2.0.0"

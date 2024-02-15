@@ -90,5 +90,5 @@ export declare function provideLinter(): {
     grammarScopes: string[];
     scope: string;
     lintsOnChange: boolean;
-    lint: (editor: any) => Promise<any[]>;
+    lint: (current_editor: any) => Promise<any[]>;
 };
