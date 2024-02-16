@@ -17,12 +17,13 @@
     "atom-linter": "10.0.0",
     "atom-package-deps": "5.1.0",
     "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint": "^8.56.0",
     "eslint-plugin-react": "^7.33.2"
   },
   "apmInstallSource": {
     "type": "git",
     "source": "https://gitlab.com/serk12/eslint-fixer-pulsar",
-    "sha": "288c905a3ffe3f6299596e263904558624c8d7e6"
+    "sha": "a49b3070e180e45f565bd5a7ae9c287179925b35"
   },
   "package-deps": [
     "linter:2.0.0"
@@ -42,7 +43,6 @@
     "@types/eslint": "^8.56.2",
     "@types/node": "^20.11.17",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
-    "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-config-standard-with-typescript": "^43.0.1",
     "eslint-plugin-import": "^2.29.1",
