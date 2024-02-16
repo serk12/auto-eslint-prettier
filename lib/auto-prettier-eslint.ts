@@ -28,7 +28,7 @@ function parseErrorsAsync() {
   let parsing = current_errors;
   const messages: LintMessage[] = [];
   let file_path = "";
-  parsing = parsing.substring(0, parsing.lastIndexOf(" problems") + 1);
+  parsing = parsing.substring(0, parsing.lastIndexOf(" problem") + 1);
   let qtty = parseInt(parsing.substring(parsing.lastIndexOf("\n"), parsing.length - 1));
   let aqtty = parsing.substring(parsing.lastIndexOf("\n"), parsing.length - 1);
   while (parsing.length > 0 && qtty > 0) {
@@ -57,7 +57,6 @@ function parseErrorsAsync() {
     fixableErrorCount: 0,
     fixableWarningCount: 0,
   } as LintResult);
-
   return fromLintToLinter(results);
 }
 
@@ -259,38 +258,6 @@ export function cliExec(cwd, runner, arg, callback) {
     }
   });
 }
-//
-// export function provideLinter() {
-//   return {
-//     name: "Eslint",
-//     grammarScopes: ["source.ts"],
-//     scope: "file",
-//     lintsOnChange: false,
-//     lint: (editor) => {
-//       let promises = [];
-//       let parsing = current_errors;
-//       while (parsing.length > 0 && parsing.indexOf("\n") !== 0) {
-//         const fileAndWhere = parsing.substring(0, parsing.indexOf(" "));
-//         parsing = parsing.substring(parsing.indexOf(" "));
-//
-//         const message = parsing.substring(0, parsing.indexOf("\n"));
-//         parsing = parsing.substring(parsing.indexOf("\n"));
-//
-//         const [path, line, column, dummy] = fileAndWhere.split(":");
-//
-//         promises.push({
-//           severity: "error",
-//           excerpt: message,
-//           location: {
-//             file: path,
-//             position: generateRange(editor, Number(line) - 1, Number(column) - 1),
-//           },
-//         });
-//       }
-//       return Promise.resolve(promises);
-//     },
-//   };
-// }
 
 export function provideLinter() {
   return {
