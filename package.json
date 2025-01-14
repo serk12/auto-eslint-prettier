@@ -1,14 +1,17 @@
 {
   "name": "auto-prettier-eslint",
   "main": "./dist/auto-prettier-eslint.js",
-  "version": "2.0.4",
+  "version": "2.0.6",
   "description": "Runs eslint --fix or prettier on the current file.",
   "keywords": [
     "prettier",
     "eslint",
     "format"
   ],
-  "repository": "",
+  "repository": {
+    "type": "git",
+    "source": "https://github.com/serk12/auto-prettier-eslint"
+  },
   "license": "MIT",
   "engines": {
     "atom": ">=1.0.0 <2.0.0"
@@ -19,10 +22,6 @@
     "eslint-plugin-jsx-a11y": "^6.8.0",
     "eslint": "^8.56.0",
     "eslint-plugin-react": "^7.33.2"
-  },
-  "apmInstallSource": {
-    "type": "git",
-    "source": "https://github.com/serk12/auto-prettier-eslint"
   },
   "package-deps": [
     "linter:2.0.0"
