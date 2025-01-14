@@ -30,7 +30,6 @@ function parseErrorsAsync() {
   let file_path = "";
   parsing = parsing.substring(0, parsing.lastIndexOf(" problem") + 1);
   let qtty = parseInt(parsing.substring(parsing.lastIndexOf("\n"), parsing.length - 1));
-  let aqtty = parsing.substring(parsing.lastIndexOf("\n"), parsing.length - 1);
   while (parsing.length > 0 && qtty > 0) {
     --qtty;
     const fileAndWhere = parsing.substring(0, parsing.indexOf(" "));

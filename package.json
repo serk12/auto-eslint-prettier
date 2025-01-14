@@ -10,7 +10,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://gitlab.com/serk12/auto-prettier-eslint"
+    "url": "https://github.com/serk12/auto-eslint-prettier"
   },
   "license": "MIT",
   "engines": {
