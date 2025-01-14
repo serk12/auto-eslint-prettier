@@ -1,7 +1,7 @@
 {
   "name": "auto-eslint-prettier",
   "main": "./dist/auto-eslint-prettier.js",
-  "version": "2.0.12",
+  "version": "2.0.13",
   "description": "Runs eslint --fix or prettier on the current file.",
   "keywords": [
     "prettier",
