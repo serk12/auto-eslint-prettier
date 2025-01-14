@@ -1,7 +1,7 @@
 {
   "name": "auto-prettier-eslint",
   "main": "./dist/auto-prettier-eslint.js",
-  "version": "2.0.2",
+  "version": "2.0.4",
   "description": "Runs eslint --fix or prettier on the current file.",
   "keywords": [
     "prettier",
@@ -23,7 +23,7 @@
   "apmInstallSource": {
     "type": "git",
     "source": "https://gitlab.com/serk12/eslint-fixer-pulsar",
-    "sha": "e041d257b389f82ac6e6f5480e4893e654f83cdb"
+    "sha": "6639445edcc3e92ccf6950f5d9250bc7b5351229"
   },
   "package-deps": [
     "linter:2.0.0"
@@ -36,19 +36,18 @@
     }
   },
   "scripts": {
-    "build": "clear ; rm -rf dist ;  npx tsc -p tsconfig.json || echo done"
+    "build": "clear ; rm -r dist ;  npx tsc -p tsconfig.json || echo done"
   },
   "devDependencies": {
     "@types/atom": "^1.40.18",
-    "@types/eslint": "^8.56.2",
+    "@types/eslint": "^9.6.1",
     "@types/node": "^20.11.17",
-    "@typescript-eslint/eslint-plugin": "^6.21.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-config-standard-with-typescript": "^43.0.1",
-    "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-n": "^16.6.2",
+    "@typescript-eslint/eslint-plugin": "^8.20.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-n": "^17.15.1",
     "eslint-plugin-prettier": "^5.1.3",
-    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-promise": "^7.2.1",
     "typescript": "^5.3.3"
   }
 }
