@@ -1,6 +1,6 @@
 "use strict";
 
-var prefix = "auto-prettier-eslint.";
+var prefix = "auto-eslint-prettier.";
 function getValue(key) {
   return atom.config.get(prefix + key);
 }

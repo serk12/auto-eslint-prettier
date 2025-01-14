@@ -101,7 +101,7 @@ function logNotification(text, tittle = "-- DEBUG --") {
 
 export function activate() {
   atom.commands.add("atom-workspace", {
-    "auto-prettier-eslint:run": () => {
+    "auto-eslint-prettier:run": () => {
       run();
     },
   });
@@ -117,7 +117,7 @@ export function activate() {
       }
       if (!running) {
         if (current_config.notifications.get()) {
-          logNotification("", "Running auto-prettier-eslint");
+          logNotification("", "Running auto-eslint-prettier");
         }
         running = true;
         run();
