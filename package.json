@@ -34,7 +34,7 @@
     }
   },
   "scripts": {
-    "build": "clear ; rm -r dist ;  npx tsc -p tsconfig.json || echo done"
+    "build": "rm -r dist ;  npx tsc -p tsconfig.json; echo done"
   },
   "devDependencies": {
     "@types/atom": "^1.40.18",

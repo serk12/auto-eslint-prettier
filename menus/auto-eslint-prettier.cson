@@ -9,7 +9,7 @@
     '.tree-view .file': [
         {
             'label': 'Run eslint --fix'
-            'command': 'auto-eslint-prettier:run-tree-view'
+            'command': 'auto-eslint-prettier:run'
         }
     ]
 'menu': [
